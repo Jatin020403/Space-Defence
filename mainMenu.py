@@ -46,14 +46,14 @@ def editIt():
         def getIt():
             global name, check, root
             name = inputBox.get()
-            with open("name.txt", "w") as g:
-                g.write(name)
             if name != "":
                 userLabel["text"] = "Player: " + name
+                with open("name.txt", "w") as g:
+                    g.write(name)
             check = True
             new.destroy()
 
-        confirm = Button(new, text="OK", relief=RAISED, bd=3, width=5,
+        confirm = Button(new, text="SUBMIT", relief=RAISED, bd=3, width=5,
                          command=getIt).pack()
 
 
@@ -70,10 +70,12 @@ editImg = ImageTk.PhotoImage(Image.open("edit.png").resize((24, 24)))
 def namer():
     global name
     try:
-        with open("name.txt", "r") as f:
+        with open("name.txt", "r+") as f:
             name = f.read()
             if name == "":
                 name = "New Player"
+            f.seek(0, 0)
+            f.write(name)
     except FileNotFoundError:
         with open("name.txt", "w") as f:
             name = "New Player"
