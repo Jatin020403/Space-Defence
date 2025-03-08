@@ -11,11 +11,13 @@ import mysql.connector as con
 connected = True
 
 try:
-    mycon = con.connect(user='root', host='localhost', passwd="jatin020403")
+    mycon = con.connect(user='root', host='localhost', passwd="0011")
     mycursor = mycon.cursor()
     mycursor.execute("create database if not exists Space_Defence")
     mycursor.execute("use space_defence")
-    mycursor.execute("create table if not exists scoreboard(Name varchar(20), Score int)")
+    mycursor.execute(
+        "create table if not exists scoreboard(Name varchar(20), Coins_Hit int, Bombs_Left int, "
+        "Score___Coins_minus_Bombs int)")
 except con.errors.DataError:
     print("Error while connecting to server.")
     connected = False
@@ -280,16 +282,17 @@ def body():
         pickle.dump(scoreList, f)
 
     if connected:
-        mycursor.execute("select Score from scoreboard where Name='{}'".format(name))
+        mycursor.execute("select Score___Coins_minus_Bombs from scoreboard where Name='{}'".format(name))
         data = mycursor.fetchone()
         if data is not None:
             if Score > data[0]:
-                mycursor.execute("insert into scoreboard values(%s, %s)", (name, Score))
+                mycursor.execute("insert into scoreboard values(%s, %s, %s, %s)", (name, tempScore, Bcount, Score))
                 mycon.commit()
-                mycursor.execute("delete from scoreboard where Name='{}' and score<{}".format(name, Score))
+                mycursor.execute(
+                    "delete from scoreboard where Name='{}' and score___Coins_minus_Bombs<{}".format(name, Score))
                 mycon.commit()
         else:
-            mycursor.execute("insert into scoreboard values(%s, %s)", (name, Score))
+            mycursor.execute("insert into scoreboard values(%s, %s, %s, %s)", (name, tempScore, Bcount, Score))
             mycon.commit()
 
     # Opening EndMenu
@@ -298,6 +301,3 @@ def body():
 
 if __name__ == "__main__":
     body()
-
-
-

@@ -32,13 +32,18 @@ def special():
 check = True
 
 
+def convert(*args):
+    global check
+    check = True
+
+
 def showAnalysis():
     global check
     if check:
         new = Toplevel()
         new.title("Space Defence")
         new.iconbitmap("game_icon.ico")
-        new.wm_geometry("200x200")
+        new.wm_geometry("210x210")
         new.resizable(False, False)
         check = False
 
@@ -48,6 +53,7 @@ def showAnalysis():
         coinLbl = Label(new, text="Coins collected: " + str(lister[1])).pack()
         bombLbl = Label(new, text="Bombs left: " + str(lister[2])).pack()
         calc = Label(new, text="Score=coins collected-bombs left= " + str(lister[0]), padx=10).pack()
+        new.bind('<Destroy>', convert)
 
 
 # creating buttons, images etc
@@ -72,8 +78,10 @@ except FileNotFoundError:
 with open("name.txt", "r")as f:
     name = f.read()
 
-scoreLabel = Label(root, text=name+" Scored: " + str(displayScore), font="ComicSansMS", bg="purple1", fg="black")
-title = Label(root, text="GAME OVER", font=font, bg="red", fg="black")
+scoreLabel = Button(root, text=name + " Scored: " + str(displayScore), font=("ComicSansMS", 17), bg="purple1",
+                    fg="black",
+                    relief=RAISED, bd=5, command=showAnalysis, activebackground="purple3", activeforeground="black")
+title = Label(root, text="GAME OVER", font=font, bg="red", fg="black", relief=GROOVE, bd=5)
 restart = Button(root, text="RESTART", bg="deepskyblue", fg="white", activebackground="steelblue", bd=5,
                  font="ComicSansMS",
                  relief=RAISED, activeforeground="white", height=1, width=10, command=again)
@@ -82,7 +90,7 @@ Quit = Button(root, text="QUIT", bg="thistle3", fg="black", activebackground="th
 mainMenu = Button(root, text="MAIN MENU", bg="cyan2", fg="black", activebackground="cyan3", bd=5,
                   font="ComicSansMS",
                   relief=RAISED, activeforeground="black", height=1, width=15, command=MainMenu)
-analysisButton = Button(root, image=analysisImg, relief=RAISED, bd=5, command=showAnalysis)
+# analysisButton = Button(root, image=analysisImg, relief=RAISED, bd=5, command=showAnalysis)
 
 # displaying created elements on screen
 bgLabel.grid(row=0, column=0, rowspan=10, columnspan=15)
@@ -91,7 +99,7 @@ title.grid(row=0, column=7)
 restart.grid(row=4, column=7)
 Quit.grid(row=6, column=7)
 mainMenu.grid(row=5, column=7)
-analysisButton.grid(row=2, column=8)
+# analysisButton.grid(row=2, column=8)
 
 with open("check.txt", "r+") as p:
     if p.read() == "True":
